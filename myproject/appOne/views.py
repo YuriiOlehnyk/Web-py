@@ -6,5 +6,5 @@ from django.http import HttpResponse
 def index(request):
     return render(request, 'appOne/index.html')
 
-#def index2(request):
-    return HttpResponse("Hello from Django!")
+def connection_check(request):
+    return HttpResponse('<h1>Hello, connection established successfully!</h1>')

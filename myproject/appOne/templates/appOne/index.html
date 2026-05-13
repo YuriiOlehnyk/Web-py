@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello Django</title>
+</head>
+<body background={% static "appOne/images/background.jpg"  %}>
+    <h1>Hello Django!</h1>
+    <p>IP address is: <strong>{{ ip }}</strong></p>
+    <!-- <img src="{% static 'appOne/images/some_image.jpg' %}" alt="Some Image"> -->
+</body>
+</html>

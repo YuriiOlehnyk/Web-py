@@ -61,7 +61,7 @@ jobs:
     - name: 3) Deploy EB application
       run: aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENV_NAME }} --version-label "Version-${{ github.sha }}"
 
-    - name: 4) End of CD Job
+    - name: 4) End of CD Job!
       run: echo "CD job is finished successfully!"
         
 

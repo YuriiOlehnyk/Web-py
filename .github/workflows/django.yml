@@ -1,7 +1,7 @@
 name: Django-CI-CD
 
 env: 
-  EB_S3_PACKAGE  : "django-app-bucket-yurii"
+  EB_S3_BUCKET : "django-app-bucket-yurii"
   EB_APPLICATION : "Django-app"
   EB_ENV_NAME    : "Django-app-env"
   DEPLOY_PACKAGE : "django_app_${{ github.sha }}.zip"
@@ -24,6 +24,21 @@ jobs:
 
     - name: Create ZIP of project
       run:  zip -r ${{ env.DEPLOY_PACKAGE }} ./ -x *.git*
+
+    - name: Configure AWS
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id    : ${{ secrets.USER_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.USER_SECRET_ACCESS_KEY }}
+        aws-region           : ${{ env.AWS_REGION }}
+
+    - name: Copy package to S3 bucket
+      run: aws s3 cp ${{ env.DEPLOY_PACKAGE }} s3://${{ env.EB_S3_BUCKET }}/
+      
+    - name: Finish CI
+      run: echo "CI is finished!"
+
+        
 
     
     

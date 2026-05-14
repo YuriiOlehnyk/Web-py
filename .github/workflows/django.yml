@@ -1,0 +1,29 @@
+name: Django-CI-CD
+
+env: 
+  EB_S3_PACKAGE  : "django-app-bucket-yurii"
+  EB_APPLICATION : "Django-app"
+  EB_ENV_NAME    : "Django-app-env"
+  DEPLOY_PACKAGE : "django_app_${{ github.sha }}.zip"
+  AWS_REGION     : "us-east-2"
+  
+
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  CI-job:
+
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Clone repo
+      uses: actions/checkout@v1
+
+    - name: Create ZIP of project
+      run:  zip -r ${{ env.DEPLOY_PACKAGE }} ./ -x *.git*
+
+    
+    

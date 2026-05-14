@@ -36,7 +36,7 @@ jobs:
       run: aws s3 cp ${{ env.DEPLOY_PACKAGE }} s3://${{ env.EB_S3_BUCKET }}/
       
     - name: Finish CI
-      run: echo "CI is finished!"
+      run: echo "CI job is finished successfully!"
 
         
 

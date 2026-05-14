@@ -19,24 +19,59 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    - name: Clone repo
+    - name: 1) Clone repo
       uses: actions/checkout@v1
 
     - name: Create ZIP of project
       run:  zip -r ${{ env.DEPLOY_PACKAGE }} ./ -x *.git*
 
-    - name: Configure AWS
+    - name: 2) Configure AWS
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id    : ${{ secrets.USER_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.USER_SECRET_ACCESS_KEY }}
         aws-region           : ${{ env.AWS_REGION }}
 
-    - name: Copy package to S3 bucket
+    - name: 3) Copy package to S3 bucket
       run: aws s3 cp ${{ env.DEPLOY_PACKAGE }} s3://${{ env.EB_S3_BUCKET }}/
       
-    - name: Finish CI
+    - name: 4) Finish of CI job
       run: echo "CI job is finished successfully!"
+      
+  CD-job:
+
+    runs-on: ubuntu-24.04
+    needs: [CI-job]
+
+    steps:
+    - name: 1) Configure AWS
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id    : ${{ secrets.USER_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.USER_SECRET_ACCESS_KEY }}
+        aws-region           : ${{ env.AWS_REGION }}
+        
+    - name: 2) Create ElasticBeanstalk Application
+      run: |
+        aws elasticbeanstalk create-application-version \
+        --application-name ${{ env.EB_APPLICATION }} \
+        --source-bundle S3Bucket="${{ env.EB_S3_BUCKET }}",S3Key="${{ env.DEPLOY_PACKAGE }}" \
+        --version-label "Version-${{ github.sha }}"
+
+    - name: 3) Deploy EB application
+      run: aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENV_NAME }} --version-label "Version-${{ github.sha }}"
+
+    - name: 4) End of CD Job
+      run: echo "CD job is finished successfully!"
+        
+
+
+
+
+
+
+
+        
 
         
 

@@ -22,20 +22,20 @@ jobs:
     - name: 1) Clone repo
       uses: actions/checkout@v1
 
-    - name: Create ZIP of project
-      run:  zip -r ${{ env.DEPLOY_PACKAGE }} ./ -x *.git*
+    - name: 2)Create ZIP of project
+      run:  cd myproject && zip -r ../${{ env.DEPLOY_PACKAGE }} . -x *.git*
 
-    - name: 2) Configure AWS
+    - name: 3) Configure AWS
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id    : ${{ secrets.USER_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.USER_SECRET_ACCESS_KEY }}
         aws-region           : ${{ env.AWS_REGION }}
 
-    - name: 3) Copy package to S3 bucket
+    - name: 4) Copy package to S3 bucket
       run: aws s3 cp ${{ env.DEPLOY_PACKAGE }} s3://${{ env.EB_S3_BUCKET }}/
       
-    - name: 4) Finish of CI job
+    - name: 5) Finish of CI job
       run: echo "CI job is finished successfully!"
       
   CD-job:
